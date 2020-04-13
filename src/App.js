@@ -4,7 +4,9 @@ import ReadContent from './components/ReadContent';
 import CreateContent from './components/CreateContent';
 import UpdateContent from './components/UpdateContent';
 import Subject from './components/Subject';
-import Control from './components/Control'
+import Control from './components/Control';
+import GugudanClass from './components/gugudan/class';
+import GugudanHooks from './components/gugudan/hooks';
 import './App.css';
 
 class App extends Component {
@@ -12,7 +14,7 @@ class App extends Component {
     super(props);
     this.max_content_id = 3;
     this.state = {
-      mode: 'read',
+      mode: 'welcome',
       selected_content_id: 2,
       subject: {title: 'WEB', sub: 'World Wide Web!'},
       welcome: {title: 'Welcom', desc: 'Hello, React!!'},
@@ -73,6 +75,8 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <GugudanClass></GugudanClass>
+        <GugudanHooks></GugudanHooks>
         <Subject
         title={this.state.subject.title}
         sub={this.state.subject.sub}
@@ -85,7 +89,22 @@ class App extends Component {
           this.setState({mode: 'read', selected_content_id: Number(id)});
         }.bind(this)}></TOC>
         <Control onChangeMode={function(_mode){
-          this.setState({mode: _mode})
+          if (_mode === 'delete'){
+            if(window.confirm()){
+              var _contents = Array.from(this.state.contents);
+              var i = 0;
+              while(i < _contents.length){
+                if (_contents[i].id === this.state.selected_content_id) {
+                  _contents.splice(i, 1);
+                  break;
+                }
+              }
+              i = i + 1;
+            }
+            this.setState({mode: 'welcome', contents: _contents})
+          } else {
+            this.setState({mode: _mode})
+          }
         }.bind(this)}></Control>
         {this.getContent()}
       </div>
